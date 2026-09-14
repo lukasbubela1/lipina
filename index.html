@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10251c">
+  <title>Lipina — sobota?</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-image" aria-hidden="true"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="eyebrow">SOBOTNÍ PLÁN</div>
+        <h1>Půjdeme v sobotu<br><em>skákat na Lipinu?</em></h1>
+        <p class="lead">Rychlá otázka. Vyber odpověď a domluvíme zbytek.</p>
+      </div>
+    </section>
+
+    <section class="card" id="questionCard">
+      <div class="question">Tak co, jdeš do toho?</div>
+      <div class="buttons" id="buttons">
+        <button class="btn yes" id="yesBtn" type="button">Ano <span>→</span></button>
+        <button class="btn no" id="noBtn" type="button">Ne</button>
+      </div>
+      <p class="hint">P.S. Tlačítko „Ne“ je trochu stydlivé. 😄</p>
+    </section>
+
+    <section class="card form-card hidden" id="formCard">
+      <div class="success-icon">✓</div>
+      <div class="question">Super! Tak kdy?</div>
+      <p class="subtext">Napiš jméno a čas, který ti vyhovuje.</p>
+
+      <form id="answerForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <input type="hidden" name="odpoved" value="Ano">
+        <label>
+          Jméno
+          <input name="jmeno" type="text" autocomplete="name" placeholder="Tvoje jméno" required maxlength="60">
+        </label>
+        <label>
+          Čas
+          <input name="cas" type="time" required>
+        </label>
+        <button class="submit-btn" type="submit">Odeslat odpověď <span>→</span></button>
+        <p class="form-status" id="formStatus"></p>
+      </form>
+    </section>
+
+    <footer>sobota · Lipina · dobrý plán</footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
