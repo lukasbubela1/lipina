@@ -1,87 +1,173 @@
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
+const yesButton = document.getElementById("yesButton");
+const noButton = document.getElementById("noButton");
 const buttons = document.getElementById("buttons");
-const questionCard = document.getElementById("questionCard");
-const formCard = document.getElementById("formCard");
-const form = document.getElementById("answerForm");
-const statusEl = document.getElementById("formStatus");
 
-let noEscapes = 0;
-let lastEscape = 0;
+const formBox = document.getElementById("formBox");
+const answerForm = document.getElementById("answerForm");
+const status = document.getElementById("status");
+
+let lastMove = 0;
+
+
+/* =========================================
+   TLAČÍTKO NE – MYŠ
+========================================= */
+
+buttons.addEventListener("mousemove", (event) => {
+
+    const rect = noButton.getBoundingClientRect();
+
+    const distanceX = event.clientX - (rect.left + rect.width / 2);
+    const distanceY = event.clientY - (rect.top + rect.height / 2);
+
+    const distance = Math.sqrt(
+        distanceX * distanceX +
+        distanceY * distanceY
+    );
+
+    // Jakmile se kurzor přiblíží
+    if (distance < 100) {
+        moveNoButton();
+    }
+
+});
+
+
+/* =========================================
+   TLAČÍTKO NE – MOBIL
+========================================= */
+
+noButton.addEventListener("touchstart", (event) => {
+
+    event.preventDefault();
+
+    moveNoButton();
+
+}, { passive: false });
+
+
+/* =========================================
+   KDYBY SE HO NĚKDO POKUSIL KLIKNOUT
+========================================= */
+
+noButton.addEventListener("click", (event) => {
+
+    event.preventDefault();
+
+    moveNoButton();
+
+});
+
+
+/* =========================================
+   POHYB TLAČÍTKA
+========================================= */
 
 function moveNoButton() {
-  const now = Date.now();
-  if (now - lastEscape < 180) return;
-  lastEscape = now;
-  noEscapes++;
 
-  const box = buttons.getBoundingClientRect();
-  const btn = noBtn.getBoundingClientRect();
-  const pad = 4;
+    const now = Date.now();
 
-  // On phones keep it within the button area and avoid the screen edges.
-  const maxX = Math.max(0, box.width - btn.width - pad * 2);
-  const maxY = Math.max(0, box.height - btn.height - pad * 2);
+    // Zabrání příliš rychlému přeskakování
+    if (now - lastMove < 180) {
+        return;
+    }
 
-  const x = pad + Math.random() * maxX;
-  const y = pad + Math.random() * maxY;
+    lastMove = now;
 
-  noBtn.style.position = "absolute";
-  noBtn.style.left = `${x}px`;
-  noBtn.style.top = `${y}px`;
-  noBtn.style.zIndex = "10";
+    const area = buttons.getBoundingClientRect();
+    const button = noButton.getBoundingClientRect();
+
+    const maxX = Math.max(
+        0,
+        area.width - button.width
+    );
+
+    const maxY = Math.max(
+        0,
+        area.height - button.height
+    );
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    noButton.style.position = "absolute";
+
+    noButton.style.left = `${x}px`;
+    noButton.style.top = `${y}px`;
+
 }
 
-["pointerenter", "pointerdown", "touchstart"].forEach(evt => {
-  noBtn.addEventListener(evt, e => {
-    if (evt !== "pointerdown" || e.pointerType !== "touch") {
-      e.preventDefault();
-      moveNoButton();
+
+/* =========================================
+   ANO
+========================================= */
+
+yesButton.addEventListener("click", () => {
+
+    document.querySelector(".top").style.display = "none";
+    buttons.style.display = "none";
+
+    formBox.classList.remove("hidden");
+
+    setTimeout(() => {
+
+        formBox.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+    }, 50);
+
+});
+
+
+/* =========================================
+   FORMSPREE
+========================================= */
+
+answerForm.addEventListener("submit", async (event) => {
+
+    event.preventDefault();
+
+    const submitButton =
+        answerForm.querySelector(".submit");
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Odesílám...";
+
+    try {
+
+        const response = await fetch(
+            answerForm.action,
+            {
+                method: "POST",
+                body: new FormData(answerForm),
+                headers: {
+                    "Accept": "application/json"
+                }
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error();
+        }
+
+        status.textContent =
+            "Odpověď byla úspěšně odeslána ✓";
+
+        answerForm.reset();
+
+        submitButton.textContent = "Odesláno ✓";
+
+    } catch {
+
+        status.textContent =
+            "Něco se pokazilo. Zkus to znovu.";
+
+        submitButton.disabled = false;
+        submitButton.textContent =
+            "Odeslat odpověď →";
+
     }
-  }, {passive:false});
-});
 
-// If somebody manages to activate it with keyboard, it still doesn't submit "No".
-noBtn.addEventListener("click", e => {
-  e.preventDefault();
-  moveNoButton();
-});
-
-yesBtn.addEventListener("click", () => {
-  questionCard.classList.add("hidden");
-  formCard.classList.remove("hidden");
-  formCard.scrollIntoView({behavior:"smooth", block:"center"});
-});
-
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const submit = form.querySelector(".submit-btn");
-  const endpoint = form.getAttribute("action");
-
-  if (endpoint.includes("YOUR_FORM_ID")) {
-    statusEl.textContent = "Nejdřív nastav Formspree ID v index.html.";
-    return;
-  }
-
-  submit.disabled = true;
-  submit.textContent = "Odesílám…";
-  statusEl.textContent = "";
-
-  try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      body: new FormData(form),
-      headers: {Accept: "application/json"}
-    });
-
-    if (!response.ok) throw new Error("send failed");
-
-    form.reset();
-    statusEl.textContent = "Hotovo — odpověď byla odeslána. ✓";
-    submit.textContent = "Odesláno ✓";
-  } catch {
-    statusEl.textContent = "Odeslání se nepovedlo. Zkus to prosím znovu.";
-    submit.disabled = false;
-    submit.innerHTML = 'Odeslat odpověď <span>→</span>';
-  }
 });
