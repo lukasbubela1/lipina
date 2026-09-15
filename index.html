@@ -1,55 +1,93 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#10251c">
-  <title>Lipina — sobota?</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lipina 🌲</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <main class="page">
-    <section class="hero">
-      <div class="hero-image" aria-hidden="true"></div>
-      <div class="hero-overlay"></div>
-      <div class="hero-content">
-        <div class="eyebrow">SOBOTNÍ PLÁN</div>
-        <h1>Půjdeme v sobotu<br><em>skákat na Lipinu?</em></h1>
-        <p class="lead">Rychlá otázka. Vyber odpověď a domluvíme zbytek.</p>
-      </div>
-    </section>
 
-    <section class="card" id="questionCard">
-      <div class="question">Tak co, jdeš do toho?</div>
-      <div class="buttons" id="buttons">
-        <button class="btn yes" id="yesBtn" type="button">Ano <span>→</span></button>
-        <button class="btn no" id="noBtn" type="button">Ne</button>
-      </div>
-    </section>
+    <div class="background"></div>
+    <div class="dark-overlay"></div>
 
-    <section class="card form-card hidden" id="formCard">
-      <div class="success-icon">✓</div>
-      <div class="question">Super! Tak kdy?</div>
-      <p class="subtext">Napiš jméno a čas, který ti vyhovuje.</p>
+    <main class="container">
 
-      <form id="answerForm" action="https://formspree.io/f/xkjndbkb" method="POST">
-        <input type="hidden" name="odpoved" value="Ano">
-        <label>
-          Jméno
-          <input name="jmeno" type="text" autocomplete="name" placeholder="Tvoje jméno" required maxlength="60">
-        </label>
-        <label>
-          Čas
-          <input name="cas" type="time" required>
-        </label>
-        <button class="submit-btn" type="submit">Odeslat odpověď <span>→</span></button>
-        <p class="form-status" id="formStatus"></p>
-      </form>
-    </section>
+        <div class="top">
+            <div class="small-title">SOBOTNÍ PLÁN</div>
 
-    <footer>sobota · Lipina · dobrý plán</footer>
-  </main>
+            <h1>
+                Půjdeme v sobotu<br>
+                <span>skákat na Lipinu?</span>
+            </h1>
 
-  <script src="script.js"></script>
+            <p>Tak co, jdeš do toho?</p>
+        </div>
+
+        <div class="buttons" id="buttons">
+
+            <button class="yes" id="yesButton">
+                <span>✓</span> Ano
+            </button>
+
+            <button class="no" id="noButton">
+                Ne
+            </button>
+
+        </div>
+
+        <section class="form-box hidden" id="formBox">
+
+            <div class="check">✓</div>
+
+            <h2>Tak jo! 🚲</h2>
+            <p>Napiš mi tvoje jméno a čas.</p>
+
+            <form
+                id="answerForm"
+                action="https://formspree.io/f/xkjndbkb"
+                method="POST"
+            >
+
+                <input type="hidden" name="odpoved" value="Ano">
+
+                <label>
+                    Jméno
+                    <input
+                        type="text"
+                        name="jmeno"
+                        placeholder="Tvoje jméno"
+                        maxlength="50"
+                        required
+                    >
+                </label>
+
+                <label>
+                    Čas
+                    <input
+                        type="time"
+                        name="cas"
+                        required
+                    >
+                </label>
+
+                <button class="submit" type="submit">
+                    Odeslat odpověď →
+                </button>
+
+                <div id="status"></div>
+
+            </form>
+
+        </section>
+
+        <div class="bottom">
+            🚲 &nbsp; LIPINA &nbsp; 🚲
+        </div>
+
+    </main>
+
+    <script src="script.js"></script>
 </body>
 </html>
